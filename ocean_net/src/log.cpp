@@ -2,7 +2,7 @@
  * @Author: OCEAN.GZY
  * @Date: 2023-11-04 17:28:07
  * @LastEditors: OCEAN.GZY
- * @LastEditTime: 2023-11-04 23:39:20
+ * @LastEditTime: 2023-11-05 09:36:04
  * @FilePath: /ocean_net/src/log.cpp
  * @Description: 注释信息
  */
@@ -235,11 +235,18 @@ namespace oceanserver
         #str, [](const std::string &fmt) { return FormatItem::ptr(new C(fmt)); } \
     }
 
-            XX(m, MessageFormatItem),
-            XX(p, LevelFormatItem),
-            XX(r, ElapseFormatItem),
-            XX(t, ThreadIdFormatItem),
-            XX(m, TimeFormatItem)
+            XX(m, MessageFormatItem),    // m:消息
+            XX(p, LevelFormatItem),      // p:日志级别
+            XX(r, ElapseFormatItem),     // r:累计毫秒数
+            XX(c, NameFormatItem),       // c:日志名称
+            XX(t, ThreadIdFormatItem),   // t:线程id
+            XX(n, NewLineFormatItem),    // n:换行
+            XX(d, DateTimeFormatItem),   // d:时间
+            XX(f, FilenameFormatItem),   // f:文件名
+            XX(l, LineFormatItem),       // l:行号
+            XX(T, TabFormatItem),        // T:Tab
+            XX(F, FiberIdFormatItem),    // F:协程id
+            XX(N, ThreadNameFormatItem), // N:线程名称
 #undef XX
         };
         // %m -- 消息体
@@ -283,6 +290,16 @@ namespace oceanserver
         }
     };
 
+    class NameFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        NameFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            os << event->getLogger()->getName();
+        }
+    };
+
     class ThreadIdFormatItem : public LogFormatter::FormatItem
     {
     public:
@@ -303,14 +320,26 @@ namespace oceanserver
         }
     };
 
-    class TimeFormatItem : public LogFormatter::FormatItem
+    class NewLineFormatItem : public LogFormatter::FormatItem
     {
     public:
-        TimeFormatItem(const std::string &str = "") {}
-        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
+        NewLineFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr)
         {
-            os << event->getTime();
+            os << std::endl;
         }
     };
+
+class DateTimeFormatItem:public LogFormatter::FormatItem{
+    public:
+        DateTimeFormatItem(const std::string &str = "%Y-%m-%d %H:%M:%S.%e"):m_for
+        {
+            format_str=str;
+        }
+        void format(std::ostream &os,std::shared_ptr<Logger> logger,LogLevel::Level level,LogEvent::ptr event   ){
+            
+        }
+};
+
 
 } // namespace name
