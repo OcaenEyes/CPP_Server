@@ -2,7 +2,7 @@
  * @Author: OCEAN.GZY
  * @Date: 2023-11-04 17:28:07
  * @LastEditors: OCEAN.GZY
- * @LastEditTime: 2023-11-04 23:39:20
+ * @LastEditTime: 2023-11-05 20:53:39
  * @FilePath: /ocean_net/src/log.cpp
  * @Description: 注释信息
  */
@@ -39,8 +39,9 @@ namespace oceanserver
     {
     }
 
-    Logger::Logger(const std::string &name = "root")
+    Logger::Logger(const std::string &name) : m_name(name), m_level(LogLevel::DEBUG)
     {
+        m_formatter.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
     }
 
     void Logger::addAppender(LogAppender::ptr appender)
@@ -64,7 +65,7 @@ namespace oceanserver
     {
         if (level >= m_level)
         {
-            auto self = std::shared_from_this();
+            auto self = shared_from_this();
             for (auto &i : m_appenders)
             {
                 i->log(self, level, event);
@@ -235,22 +236,43 @@ namespace oceanserver
         #str, [](const std::string &fmt) { return FormatItem::ptr(new C(fmt)); } \
     }
 
-            XX(m, MessageFormatItem),
-            XX(p, LevelFormatItem),
-            XX(r, ElapseFormatItem),
-            XX(t, ThreadIdFormatItem),
-            XX(m, TimeFormatItem)
+            XX(m, MessageFormatItem),    // m:消息
+            XX(p, LevelFormatItem),      // p:日志级别
+            XX(r, ElapseFormatItem),     // r:累计毫秒数
+            XX(c, NameFormatItem),       // c:日志名称
+            XX(t, ThreadIdFormatItem),   // t:线程id
+            XX(n, NewLineFormatItem),    // n:换行
+            XX(d, DateTimeFormatItem),   // d:时间
+            XX(f, FileNameFormatItem),   // f:文件名
+            XX(l, LineFormatItem),       // l:行号
+            XX(T, TabFormatItem),        // T:Tab
+            XX(F, FiberIdFormatItem),    // F:协程id
+            XX(N, ThreadNameFormatItem), // N:线程名称
+
 #undef XX
         };
-        // %m -- 消息体
-        // %p -- level
-        // %r -- 启动后的时间
-        // %c -- 日志名称
-        // %t -- 线程id
-        // %n -- 回车换行
-        // %d -- 日志时间
-        // %f -- 文件名
-        // %l -- 行号
+
+        for (auto &&i : vec)
+        {
+            if (std::get<2>(i) == 0)
+            {
+                m_items.push_back(FormatItem::ptr(new StringFormatItem(std::get<0>(i))));
+            }
+            else
+            {
+                auto it = s_format_items.find(std::get<0>(i));
+                if (it == s_format_items.end())
+                {
+                    m_items.push_back(FormatItem::ptr(new StringFormatItem("<<error_format %" + std::get<0>(i) + ">>")));
+                }
+                else
+                {
+                    m_items.push_back(it->second(std::get<1>(i)));
+                }
+            }
+
+            std::cout << std::get<0>(i) << "-" << std::get<1>(i) << "-" << std::get<2>(i) << std::endl;
+        }
     }
 
     class MessageFormatItem : public LogFormatter::FormatItem
@@ -279,6 +301,16 @@ namespace oceanserver
         ElapseFormatItem(const std::string &str = "") {}
         void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
         {
+            os << event->getLogger();
+        }
+    };
+
+    class NameFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        NameFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
             os << event->getElapse();
         }
     };
@@ -303,14 +335,95 @@ namespace oceanserver
         }
     };
 
-    class TimeFormatItem : public LogFormatter::FormatItem
+    class ThreadNameFormatItem : public LogFormatter::FormatItem
     {
     public:
-        TimeFormatItem(const std::string &str = "") {}
+        ThreadNameFormatItem(const std::string &str = "") {}
         void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
         {
-            os << event->getTime();
+            os << event->getThreadName();
         }
+    };
+
+    class DateTimeFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        DateTimeFormatItem(const std::string &format = "%Y-%m-%d %H:%M:%S") : m_format(format)
+        {
+            if (m_format.empty())
+            {
+                m_format = "%Y-%m-%d %H:%M:%S";
+            }
+        }
+        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            struct tm tm;
+            time_t time = event->getTime();
+            localtime_r(&time, &tm);
+            char buf[64];
+            strftime(buf, sizeof(buf), m_format.c_str(), &tm);
+            os << buf;
+        }
+
+    private:
+        std::string m_format;
+    };
+
+    class FileNameFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        FileNameFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            os << event->getFile();
+        }
+    };
+
+    class LineFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        LineFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, Logger::ptr logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            os << event->getLine();
+        }
+    };
+
+    class NewLineFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        NewLineFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            os << std::endl;
+        }
+    };
+
+    class StringFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        StringFormatItem(const std::string &str)
+            : m_string(str) {}
+        void format(std::ostream &os, Logger::ptr logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            os << m_string;
+        }
+
+    private:
+        std::string m_string;
+    };
+
+    class TabFormatItem : public LogFormatter::FormatItem
+    {
+    public:
+        TabFormatItem(const std::string &str = "") {}
+        void format(std::ostream &os, Logger::ptr logger, LogLevel::Level level, LogEvent::ptr event) override
+        {
+            os << "\t";
+        }
+
+    private:
+        std::string m_string;
     };
 
 } // namespace name
