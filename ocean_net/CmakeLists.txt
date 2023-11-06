@@ -7,11 +7,18 @@ set (CMAKE_CXX_STANDARD 11)
 
 set(LIB_SRC src/log.cpp)
 
+# 设置第三方目录
+set(THIRF_DIR "thirds")
+
+include_directories(${THIRF_DIR}/yaml-cpp-0.8/include)
+link_directories(${THIRF_DIR}/yaml-cpp-0.8/lib)
+
 add_library(ocean_server SHARED ${LIB_SRC})
 
 add_executable(test test/test.cpp)
 add_dependencies(test ocean_server)
 target_link_libraries(test ocean_server)
+target_link_libraries(test yaml-cpp)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

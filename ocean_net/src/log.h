@@ -30,6 +30,7 @@ namespace oceanserver
     public:
         enum Level
         { // 日志级别
+            UNKNOWN = 0,
             DEBUG = 1,
             INFO = 2,
             WARN = 3,
@@ -45,7 +46,10 @@ namespace oceanserver
     {
     public:
         typedef std::shared_ptr<LogEvent> ptr;
-        LogEvent();
+        LogEvent(std::shared_ptr<Logger> logger, LogLevel::Level level,
+                 const char *file, int32_t line, uint32_t elapse,
+                 uint32_t thread_id, uint32_t fiber_id, uint64_t time,
+                 const std::string &thread_name);
         ~LogEvent();
 
         const char *getFile() const { return m_file; }
@@ -78,7 +82,7 @@ namespace oceanserver
     class LogFormatter
     {
     public:
-        LogFormatter(const std::string &patten);
+        LogFormatter(const std::string &pattern);
         ~LogFormatter();
 
         typedef std::shared_ptr<LogFormatter> ptr;
@@ -86,6 +90,10 @@ namespace oceanserver
 
     public:
         void init();
+
+        bool isError() const { return m_error; }
+
+        const std::string getPattern() const { return m_pattern; }
 
         class FormatItem // 格式器的item
         {
@@ -97,26 +105,35 @@ namespace oceanserver
         };
 
     private:
-        std::string m_patten;
-        std::vector<FormatItem::ptr> m_items;
+        std::string m_pattern;                // 日志格式模版
+        std::vector<FormatItem::ptr> m_items; // 日志格式解析后格式
+        bool m_error = false;                 // 是否有错误
     };
 
     // 日志输出
     class LogAppender
     {
+        friend class Logger;
+
     public:
-        LogAppender();
+        typedef std::shared_ptr<LogAppender> ptr; // 智能指针
+
         virtual ~LogAppender(){};
 
-        typedef std::shared_ptr<LogAppender> ptr;                                                         // 智能指针
         virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) = 0; // 纯虚函数，子类必须实现
+
+        virtual std::string toYamlString() = 0;
 
         void setLogFormatter(LogFormatter::ptr val) { m_formatter = val; };
         LogFormatter::ptr getLogFormatter() const { return m_formatter; };
 
+        LogLevel::Level getLevel() const { return m_level; }
+        void setLevel(LogLevel::Level val) { m_level = val; }
+
     protected:
-        LogLevel::Level m_level;
-        LogFormatter::ptr m_formatter;
+        LogLevel::Level m_level = LogLevel::DEBUG; // 日志级别
+        LogFormatter::ptr m_formatter;             // 日志格式器
+        bool m_hasFormatter = false;               // 是否有自己的日志格式器
     };
 
     // 日志器
@@ -135,11 +152,21 @@ namespace oceanserver
         void error(LogEvent::ptr event);
         void fatal(LogEvent::ptr event);
 
-        void addAppender(LogAppender::ptr appender);
-        void delAppender(LogAppender::ptr appender);
+        void addAppender(LogAppender::ptr appender); // 增加日志目标
+        void delAppender(LogAppender::ptr appender); // 删除日志目标
+        void clearAppenders();                       // 清空日志目标
 
-        LogLevel::Level getLogLevel() { return m_level; };
-        void setLogLevel(LogLevel::Level val) { m_level = val; };
+        LogLevel::Level getLogLevel() { return m_level; }        // 获取日志级别
+        void setLogLevel(LogLevel::Level val) { m_level = val; } // 设置日志级别
+
+        const std::string &getName() const { return m_name; } // 返回日志名称
+
+        void setLogFormatter(LogFormatter::ptr val); // 设置日志格式器
+        void setLogFormatter(const std::string val); // 设置日志格式模版
+
+        LogFormatter::ptr getLogFormatter();
+
+        std::string toYamlString();
 
     private:
         std::string m_name;                      // 日志名称
@@ -156,6 +183,7 @@ namespace oceanserver
     public:
         typedef std::shared_ptr<StdoutLogAppender> ptr;
         virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override;
+        std::string toYamlString() override;
     };
 
     // 输出到文件的Appender
@@ -166,17 +194,34 @@ namespace oceanserver
 
         typedef std::shared_ptr<FileLogAppender> ptr;
         virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override;
+        std::string toYamlString() override;
 
         bool reopen();
 
     private:
-        std::string m_filename;
-        std::ofstream m_filestream;
+        std::string m_filename;     // 文件路径
+        std::ofstream m_filestream; // 文件流
+        uint64_t m_lastTime = 0;    // 上次重新打开时间
     };
 
     class LoggerManager
     {
+    public:
+        LoggerManager();
+        Logger::ptr getLogger(const std::string &name);
+        void init();
+
+        Logger::ptr getRoot() const { return m_root; }
+        std::string toYamlString();
+
+    private:
+        std::map<std::string, Logger::ptr> m_loggers;
+        Logger::ptr m_root; // 主日志器
     };
+
+    // 日志器管理类 单例模式
+    // typedef oceanserver::Singleton<LoggerManager> LoggerMgr;
+
 }
 
 #endif
