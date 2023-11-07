@@ -1,0 +1,100 @@
+syntax="proto3";
+package oceanim;
+
+enum MsgType{
+    PRIVATE = 0;
+    GROUP = 1;
+}
+
+message SigninData{
+    int64 user_id = 1;
+
+    string password = 2;
+    int32 client_timestamp = 3;
+}
+
+
+// 为用户发送消息幂等性记录信息
+message UserLastSendData{
+    int64 user_id =1;
+    int64 msg_id =2;
+    int32 client_time =3; // 每个用户消息唯一
+    int32 msg_time=4;
+}
+
+message Timestamp {
+    int32 timestamp =1;
+}
+
+message NewMsg {
+    int64 user_id=1;
+    int64 peer_id = 2;
+    MsgType msg_type =4;
+    string message = 5;
+
+    int32 client_time=6;
+    int32 msg_time=7;
+}
+
+message MsgId {
+    int64 msg_id =1;
+}
+
+message UserId{
+    int64 user_id=1;
+}
+
+message UserIds {
+    repeated int64 user_ids =1;
+}
+
+message UserInfo {
+    int64 user_id = 1;
+    string name=2;
+}
+
+message UserInfos {
+    repeated UserInfo user_infos=1;
+}
+
+message GroupId {
+    int64 group_id=1;
+}
+
+message GroupInfo {
+    int64 group_id =1;
+    string name= 2;
+}
+
+message GroupInfos {
+    repeated GroupInfo group_infos=1;
+}
+
+message UserAndMsgId {
+    int64 user_id =1;
+    int64 msg_id =2;
+}
+
+message NewPrivateMsg {
+    int64 sender =1;
+    int64 sender_msg_id =2;
+
+    int64 receiver =3;
+    int64 receiver_msg_id = 4;
+
+    string message =6;
+
+    int32 msg_time =7;
+    int32 client_time=8;
+}
+
+message NewGroupMsg {
+    int64 group_id =1;
+    repeated UserAndMsgId user_and_msgids = 2;
+
+    int64 sender_user_id =3;
+    int64 sender_msg_id =4;
+
+    string message =5;
+    int32 msg_time =6;
+}
