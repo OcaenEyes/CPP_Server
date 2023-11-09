@@ -1,0 +1,62 @@
+syntax = "proto3";
+package oceanim;
+
+import "server/common/messages.proto";
+
+option cc_generic_services = true;
+
+message Session {
+    bool has_session=1;
+    int64 user_id = 2;
+    string addr =3; // ip:port
+}
+
+message Sessions {
+    repeated Session sessions =1;
+}
+
+message UserIdAndGroupId {
+    int64 msg_id =1;
+    int64 group_id =2;
+
+    int32 msg_count = 3; // 客户端可以选择 获取多少条消息
+} 
+
+message PairUserId {
+    int64 user_id =1;
+    int64 peer_id =2;
+
+    int32 msg_count =3; //客户端可以选择 获取多少条消息
+}
+
+message PairMsgId {
+    int64 user_id =1;
+    int64 start_msg_id =2;
+    int64 end_msg_id = 3;
+}
+
+service DbProxyService{
+    rpc Test(Ping) returns (Pong);
+    rpc AuthAndSession(SigninData) returns (Pong);
+
+    rpc SavePrivateMsg(NewPrivateMsg) returns (Reply);
+    rpc SaveGroupMsg(NewGroupMsg) returns (Reply);
+
+    rpc GetLastGroupMsgs(UserIdAndGroupId) returns (Msgs);
+    rpc GetPrivateMsgs(PairUserId) returns (Msgs);
+    rpc GetUserMsgs(PairMsgId) returns (Msgs);
+
+    rpc GetLastMsgId(UserId) returns (MsgId);
+
+    rpc SetUserLastSendData(UserLastSendData) returns(Pong);
+    rpc GetUserLastSendData(UserId) returns (UserLastSendData);
+
+    rpc GetSessions(UserIds) returns(Sessions);
+
+    rpc GetMsgs(MsgIdRange) returns (Msgs);
+    rpc GetFriends(UserId) returns (UserInfos);
+
+    rpc GetGroups(UserId) returns (GroupInfos);
+    rpc GetGroupMembers(GroupId) returns (UserInfos);
+
+}

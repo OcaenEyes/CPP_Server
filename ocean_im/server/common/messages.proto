@@ -98,3 +98,58 @@ message NewGroupMsg {
     string message =5;
     int32 msg_time =6;
 }
+
+enum DataType{
+    NONE = 0;
+
+    PRIVATE_MESSAGE = 1;
+    GROUP_MESSAGE = 2;
+
+    ADDUSER=3;
+    REMOVEUSER=4;
+
+    ADDGROUP=5;
+    REMOVEGROUP=6;
+}
+
+message Msg{
+    int64 user_id =1; // 发送者或接受者
+    int64 msg_id=2;
+
+    int64 sender=3;
+    int64 receiver=4; // 用户或群组
+
+    string message=5;
+    int64 group_id=6; //0个用户，另一个群组
+
+    int32 client_time=8;
+    int32 msg_time=9;
+}
+
+message Msgs {
+    repeated Msg msgs=1;
+}
+
+message MsgReply {
+    int32 msg_time=2; // server 记录
+    int64 msg_id=3;
+    int64 last_msg_id=4;
+}
+
+message MsgIdRange {
+    int64 user_id=1;
+    int64 start_msg_id=2;
+    int64 end_msg_id=3;
+}
+
+message Ping {
+    int64 user_id=1;
+}
+
+message Pong{
+    int64 last_msg_id=1;
+}
+
+message Reply {
+    
+}

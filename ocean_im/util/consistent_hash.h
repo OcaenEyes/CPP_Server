@@ -10,14 +10,17 @@
 #include <utility>
 #include <butil/crc32c.h>
 
-template <>
-struct std::hash<oceanim::vnode_t>
+namespace std
 {
-    uint32_t operator()(oceanim::vnode_t val) const
+    template <>
+    struct hash<oceanim::vnode_t>
     {
-        return butil::crc32c::Value(reinterpret_cast<const char *>(&val), sizeof(&val));
-    }
-};
+        uint32_t operator()(oceanim::vnode_t val) const
+        {
+            return butil::crc32c::Value(reinterpret_cast<const char *>(&val), sizeof(&val));
+        }
+    };
+} // namespace std
 
 namespace oceanim
 {
