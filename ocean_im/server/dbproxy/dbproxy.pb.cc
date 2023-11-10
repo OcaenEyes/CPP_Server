@@ -161,35 +161,37 @@ const char descriptor_table_protodef_server_2fdbproxy_2fdbproxy_2eproto[] PROTOB
   "g_count\030\003 \001(\005\"A\n\nPairUserId\022\017\n\007user_id\030\001"
   " \001(\003\022\017\n\007peer_id\030\002 \001(\003\022\021\n\tmsg_count\030\003 \001(\005"
   "\"F\n\tPairMsgId\022\017\n\007user_id\030\001 \001(\003\022\024\n\014start_"
-  "msg_id\030\002 \001(\003\022\022\n\nend_msg_id\030\003 \001(\0032\271\006\n\016DbP"
+  "msg_id\030\002 \001(\003\022\022\n\nend_msg_id\030\003 \001(\0032\355\006\n\016DbP"
   "roxyService\022$\n\004Test\022\r.oceanim.Ping\032\r.oce"
-  "anim.Pong\0224\n\016AuthAndSession\022\023.oceanim.Si"
-  "gninData\032\r.oceanim.Pong\0228\n\016SavePrivateMs"
-  "g\022\026.oceanim.NewPrivateMsg\032\016.oceanim.Repl"
-  "y\0224\n\014SaveGroupMsg\022\024.oceanim.NewGroupMsg\032"
-  "\016.oceanim.Reply\022<\n\020GetLastGroupMsgs\022\031.oc"
-  "eanim.UserIdAndGroupId\032\r.oceanim.Msgs\0224\n"
-  "\016GetPrivateMsgs\022\023.oceanim.PairUserId\032\r.o"
-  "ceanim.Msgs\0220\n\013GetUserMsgs\022\022.oceanim.Pai"
-  "rMsgId\032\r.oceanim.Msgs\022/\n\014GetLastMsgId\022\017."
-  "oceanim.UserId\032\016.oceanim.MsgId\022\?\n\023SetUse"
-  "rLastSendData\022\031.oceanim.UserLastSendData"
-  "\032\r.oceanim.Pong\022A\n\023GetUserLastSendData\022\017"
-  ".oceanim.UserId\032\031.oceanim.UserLastSendDa"
-  "ta\0222\n\013GetSessions\022\020.oceanim.UserIds\032\021.oc"
-  "eanim.Sessions\022-\n\007GetMsgs\022\023.oceanim.MsgI"
-  "dRange\032\r.oceanim.Msgs\0221\n\nGetFriends\022\017.oc"
-  "eanim.UserId\032\022.oceanim.UserInfos\0221\n\tGetG"
-  "roups\022\017.oceanim.UserId\032\023.oceanim.GroupIn"
-  "fos\0227\n\017GetGroupMembers\022\020.oceanim.GroupId"
-  "\032\022.oceanim.UserInfosB\003\200\001\001b\006proto3"
+  "anim.Pong\0228\n\022AuthAndSaveSession\022\023.oceani"
+  "m.SigninData\032\r.oceanim.Pong\022.\n\014ClearSess"
+  "ion\022\017.oceanim.UserId\032\r.oceanim.Pong\0228\n\016S"
+  "avePrivateMsg\022\026.oceanim.NewPrivateMsg\032\016."
+  "oceanim.Reply\0224\n\014SaveGroupMsg\022\024.oceanim."
+  "NewGroupMsg\032\016.oceanim.Reply\022<\n\020GetLastGr"
+  "oupMsgs\022\031.oceanim.UserIdAndGroupId\032\r.oce"
+  "anim.Msgs\0224\n\016GetPrivateMsgs\022\023.oceanim.Pa"
+  "irUserId\032\r.oceanim.Msgs\0220\n\013GetUserMsgs\022\022"
+  ".oceanim.PairMsgId\032\r.oceanim.Msgs\022/\n\014Get"
+  "LastMsgId\022\017.oceanim.UserId\032\016.oceanim.Msg"
+  "Id\022\?\n\023SetUserLastSendData\022\031.oceanim.User"
+  "LastSendData\032\r.oceanim.Pong\022A\n\023GetUserLa"
+  "stSendData\022\017.oceanim.UserId\032\031.oceanim.Us"
+  "erLastSendData\0222\n\013GetSessions\022\020.oceanim."
+  "UserIds\032\021.oceanim.Sessions\022-\n\007GetMsgs\022\023."
+  "oceanim.MsgIdRange\032\r.oceanim.Msgs\0221\n\nGet"
+  "Friends\022\017.oceanim.UserId\032\022.oceanim.UserI"
+  "nfos\0221\n\tGetGroups\022\017.oceanim.UserId\032\023.oce"
+  "anim.GroupInfos\0227\n\017GetGroupMembers\022\020.oce"
+  "anim.GroupId\032\022.oceanim.UserInfosB\003\200\001\001b\006p"
+  "roto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_server_2fdbproxy_2fdbproxy_2eproto_deps[1] = {
   &::descriptor_table_server_2fcommon_2fmessages_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_server_2fdbproxy_2fdbproxy_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_server_2fdbproxy_2fdbproxy_2eproto = {
-  false, false, 1233, descriptor_table_protodef_server_2fdbproxy_2fdbproxy_2eproto, "server/dbproxy/dbproxy.proto", 
+  false, false, 1285, descriptor_table_protodef_server_2fdbproxy_2fdbproxy_2eproto, "server/dbproxy/dbproxy.proto", 
   &descriptor_table_server_2fdbproxy_2fdbproxy_2eproto_once, descriptor_table_server_2fdbproxy_2fdbproxy_2eproto_deps, 1, 5,
   schemas, file_default_instances, TableStruct_server_2fdbproxy_2fdbproxy_2eproto::offsets,
   file_level_metadata_server_2fdbproxy_2fdbproxy_2eproto, file_level_enum_descriptors_server_2fdbproxy_2fdbproxy_2eproto, file_level_service_descriptors_server_2fdbproxy_2fdbproxy_2eproto,
@@ -1367,11 +1369,19 @@ void DbProxyService::Test(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
   done->Run();
 }
 
-void DbProxyService::AuthAndSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+void DbProxyService::AuthAndSaveSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                          const ::oceanim::SigninData*,
                          ::oceanim::Pong*,
                          ::google::protobuf::Closure* done) {
-  controller->SetFailed("Method AuthAndSession() not implemented.");
+  controller->SetFailed("Method AuthAndSaveSession() not implemented.");
+  done->Run();
+}
+
+void DbProxyService::ClearSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                         const ::oceanim::UserId*,
+                         ::oceanim::Pong*,
+                         ::google::protobuf::Closure* done) {
+  controller->SetFailed("Method ClearSession() not implemented.");
   done->Run();
 }
 
@@ -1495,7 +1505,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
              done);
       break;
     case 1:
-      AuthAndSession(controller,
+      AuthAndSaveSession(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::SigninData*>(
                  request),
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<::oceanim::Pong*>(
@@ -1503,6 +1513,14 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
              done);
       break;
     case 2:
+      ClearSession(controller,
+             ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserId*>(
+                 request),
+             ::PROTOBUF_NAMESPACE_ID::internal::DownCast<::oceanim::Pong*>(
+                 response),
+             done);
+      break;
+    case 3:
       SavePrivateMsg(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::NewPrivateMsg*>(
                  request),
@@ -1510,7 +1528,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 3:
+    case 4:
       SaveGroupMsg(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::NewGroupMsg*>(
                  request),
@@ -1518,7 +1536,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 4:
+    case 5:
       GetLastGroupMsgs(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserIdAndGroupId*>(
                  request),
@@ -1526,7 +1544,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 5:
+    case 6:
       GetPrivateMsgs(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::PairUserId*>(
                  request),
@@ -1534,7 +1552,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 6:
+    case 7:
       GetUserMsgs(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::PairMsgId*>(
                  request),
@@ -1542,7 +1560,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 7:
+    case 8:
       GetLastMsgId(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserId*>(
                  request),
@@ -1550,7 +1568,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 8:
+    case 9:
       SetUserLastSendData(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserLastSendData*>(
                  request),
@@ -1558,7 +1576,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 9:
+    case 10:
       GetUserLastSendData(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserId*>(
                  request),
@@ -1566,7 +1584,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 10:
+    case 11:
       GetSessions(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserIds*>(
                  request),
@@ -1574,7 +1592,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 11:
+    case 12:
       GetMsgs(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::MsgIdRange*>(
                  request),
@@ -1582,7 +1600,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 12:
+    case 13:
       GetFriends(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserId*>(
                  request),
@@ -1590,7 +1608,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 13:
+    case 14:
       GetGroups(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::UserId*>(
                  request),
@@ -1598,7 +1616,7 @@ void DbProxyService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
-    case 14:
+    case 15:
       GetGroupMembers(controller,
              ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::oceanim::GroupId*>(
                  request),
@@ -1621,30 +1639,32 @@ const ::PROTOBUF_NAMESPACE_ID::Message& DbProxyService::GetRequestPrototype(
     case 1:
       return ::oceanim::SigninData::default_instance();
     case 2:
-      return ::oceanim::NewPrivateMsg::default_instance();
+      return ::oceanim::UserId::default_instance();
     case 3:
-      return ::oceanim::NewGroupMsg::default_instance();
+      return ::oceanim::NewPrivateMsg::default_instance();
     case 4:
-      return ::oceanim::UserIdAndGroupId::default_instance();
+      return ::oceanim::NewGroupMsg::default_instance();
     case 5:
-      return ::oceanim::PairUserId::default_instance();
+      return ::oceanim::UserIdAndGroupId::default_instance();
     case 6:
-      return ::oceanim::PairMsgId::default_instance();
+      return ::oceanim::PairUserId::default_instance();
     case 7:
-      return ::oceanim::UserId::default_instance();
+      return ::oceanim::PairMsgId::default_instance();
     case 8:
-      return ::oceanim::UserLastSendData::default_instance();
+      return ::oceanim::UserId::default_instance();
     case 9:
-      return ::oceanim::UserId::default_instance();
+      return ::oceanim::UserLastSendData::default_instance();
     case 10:
-      return ::oceanim::UserIds::default_instance();
-    case 11:
-      return ::oceanim::MsgIdRange::default_instance();
-    case 12:
       return ::oceanim::UserId::default_instance();
+    case 11:
+      return ::oceanim::UserIds::default_instance();
+    case 12:
+      return ::oceanim::MsgIdRange::default_instance();
     case 13:
       return ::oceanim::UserId::default_instance();
     case 14:
+      return ::oceanim::UserId::default_instance();
+    case 15:
       return ::oceanim::GroupId::default_instance();
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
@@ -1662,30 +1682,32 @@ const ::PROTOBUF_NAMESPACE_ID::Message& DbProxyService::GetResponsePrototype(
     case 1:
       return ::oceanim::Pong::default_instance();
     case 2:
-      return ::oceanim::Reply::default_instance();
+      return ::oceanim::Pong::default_instance();
     case 3:
       return ::oceanim::Reply::default_instance();
     case 4:
-      return ::oceanim::Msgs::default_instance();
+      return ::oceanim::Reply::default_instance();
     case 5:
       return ::oceanim::Msgs::default_instance();
     case 6:
       return ::oceanim::Msgs::default_instance();
     case 7:
-      return ::oceanim::MsgId::default_instance();
-    case 8:
-      return ::oceanim::Pong::default_instance();
-    case 9:
-      return ::oceanim::UserLastSendData::default_instance();
-    case 10:
-      return ::oceanim::Sessions::default_instance();
-    case 11:
       return ::oceanim::Msgs::default_instance();
+    case 8:
+      return ::oceanim::MsgId::default_instance();
+    case 9:
+      return ::oceanim::Pong::default_instance();
+    case 10:
+      return ::oceanim::UserLastSendData::default_instance();
+    case 11:
+      return ::oceanim::Sessions::default_instance();
     case 12:
-      return ::oceanim::UserInfos::default_instance();
+      return ::oceanim::Msgs::default_instance();
     case 13:
-      return ::oceanim::GroupInfos::default_instance();
+      return ::oceanim::UserInfos::default_instance();
     case 14:
+      return ::oceanim::GroupInfos::default_instance();
+    case 15:
       return ::oceanim::UserInfos::default_instance();
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
@@ -1712,102 +1734,109 @@ void DbProxyService_Stub::Test(::PROTOBUF_NAMESPACE_ID::RpcController* controlle
   channel_->CallMethod(descriptor()->method(0),
                        controller, request, response, done);
 }
-void DbProxyService_Stub::AuthAndSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+void DbProxyService_Stub::AuthAndSaveSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::SigninData* request,
                               ::oceanim::Pong* response,
                               ::google::protobuf::Closure* done) {
   channel_->CallMethod(descriptor()->method(1),
                        controller, request, response, done);
 }
+void DbProxyService_Stub::ClearSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                              const ::oceanim::UserId* request,
+                              ::oceanim::Pong* response,
+                              ::google::protobuf::Closure* done) {
+  channel_->CallMethod(descriptor()->method(2),
+                       controller, request, response, done);
+}
 void DbProxyService_Stub::SavePrivateMsg(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::NewPrivateMsg* request,
                               ::oceanim::Reply* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(2),
+  channel_->CallMethod(descriptor()->method(3),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::SaveGroupMsg(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::NewGroupMsg* request,
                               ::oceanim::Reply* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(3),
+  channel_->CallMethod(descriptor()->method(4),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetLastGroupMsgs(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserIdAndGroupId* request,
                               ::oceanim::Msgs* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(4),
+  channel_->CallMethod(descriptor()->method(5),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetPrivateMsgs(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::PairUserId* request,
                               ::oceanim::Msgs* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(5),
+  channel_->CallMethod(descriptor()->method(6),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetUserMsgs(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::PairMsgId* request,
                               ::oceanim::Msgs* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(6),
+  channel_->CallMethod(descriptor()->method(7),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetLastMsgId(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserId* request,
                               ::oceanim::MsgId* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(7),
+  channel_->CallMethod(descriptor()->method(8),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::SetUserLastSendData(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserLastSendData* request,
                               ::oceanim::Pong* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(8),
+  channel_->CallMethod(descriptor()->method(9),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetUserLastSendData(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserId* request,
                               ::oceanim::UserLastSendData* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(9),
+  channel_->CallMethod(descriptor()->method(10),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetSessions(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserIds* request,
                               ::oceanim::Sessions* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(10),
+  channel_->CallMethod(descriptor()->method(11),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetMsgs(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::MsgIdRange* request,
                               ::oceanim::Msgs* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(11),
+  channel_->CallMethod(descriptor()->method(12),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetFriends(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserId* request,
                               ::oceanim::UserInfos* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(12),
+  channel_->CallMethod(descriptor()->method(13),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetGroups(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::UserId* request,
                               ::oceanim::GroupInfos* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(13),
+  channel_->CallMethod(descriptor()->method(14),
                        controller, request, response, done);
 }
 void DbProxyService_Stub::GetGroupMembers(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                               const ::oceanim::GroupId* request,
                               ::oceanim::UserInfos* response,
                               ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(14),
+  channel_->CallMethod(descriptor()->method(15),
                        controller, request, response, done);
 }
 

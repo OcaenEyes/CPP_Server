@@ -917,8 +917,12 @@ class DbProxyService : public ::PROTOBUF_NAMESPACE_ID::Service {
                        const ::oceanim::Ping* request,
                        ::oceanim::Pong* response,
                        ::google::protobuf::Closure* done);
-  virtual void AuthAndSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+  virtual void AuthAndSaveSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::oceanim::SigninData* request,
+                       ::oceanim::Pong* response,
+                       ::google::protobuf::Closure* done);
+  virtual void ClearSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::oceanim::UserId* request,
                        ::oceanim::Pong* response,
                        ::google::protobuf::Closure* done);
   virtual void SavePrivateMsg(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
@@ -1006,8 +1010,12 @@ class DbProxyService_Stub : public DbProxyService {
                        const ::oceanim::Ping* request,
                        ::oceanim::Pong* response,
                        ::google::protobuf::Closure* done);
-  void AuthAndSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+  void AuthAndSaveSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::oceanim::SigninData* request,
+                       ::oceanim::Pong* response,
+                       ::google::protobuf::Closure* done);
+  void ClearSession(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::oceanim::UserId* request,
                        ::oceanim::Pong* response,
                        ::google::protobuf::Closure* done);
   void SavePrivateMsg(::PROTOBUF_NAMESPACE_ID::RpcController* controller,

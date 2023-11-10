@@ -5,6 +5,7 @@ import "server/common/messages.proto";
 
 option cc_generic_services = true;
 
+// protoc --proto_path=/workspaces/CPP_Server/ocean_im --cpp_out=/workspaces/CPP_Server/ocean_im  server/dbproxy/dbproxy.proto
 message Session {
     bool has_session=1;
     int64 user_id = 2;
@@ -37,7 +38,8 @@ message PairMsgId {
 
 service DbProxyService{
     rpc Test(Ping) returns (Pong);
-    rpc AuthAndSession(SigninData) returns (Pong);
+    rpc AuthAndSaveSession(SigninData) returns (Pong);
+    rpc ClearSession(UserId) returns (Pong);
 
     rpc SavePrivateMsg(NewPrivateMsg) returns (Reply);
     rpc SaveGroupMsg(NewGroupMsg) returns (Reply);

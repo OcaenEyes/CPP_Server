@@ -326,6 +326,7 @@ class SigninData final :
 
   enum : int {
     kPasswordFieldNumber = 2,
+    kAccessAddrFieldNumber = 4,
     kUserIdFieldNumber = 1,
     kClientTimestampFieldNumber = 3,
   };
@@ -341,6 +342,20 @@ class SigninData final :
   const std::string& _internal_password() const;
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_password(const std::string& value);
   std::string* _internal_mutable_password();
+  public:
+
+  // string access_addr = 4;
+  void clear_access_addr();
+  const std::string& access_addr() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_access_addr(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_access_addr();
+  PROTOBUF_MUST_USE_RESULT std::string* release_access_addr();
+  void set_allocated_access_addr(std::string* access_addr);
+  private:
+  const std::string& _internal_access_addr() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_access_addr(const std::string& value);
+  std::string* _internal_mutable_access_addr();
   public:
 
   // int64 user_id = 1;
@@ -369,6 +384,7 @@ class SigninData final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr access_addr_;
   ::PROTOBUF_NAMESPACE_ID::int64 user_id_;
   ::PROTOBUF_NAMESPACE_ID::int32 client_timestamp_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -3887,6 +3903,52 @@ inline void SigninData::_internal_set_client_timestamp(::PROTOBUF_NAMESPACE_ID::
 inline void SigninData::set_client_timestamp(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_client_timestamp(value);
   // @@protoc_insertion_point(field_set:oceanim.SigninData.client_timestamp)
+}
+
+// string access_addr = 4;
+inline void SigninData::clear_access_addr() {
+  access_addr_.ClearToEmpty();
+}
+inline const std::string& SigninData::access_addr() const {
+  // @@protoc_insertion_point(field_get:oceanim.SigninData.access_addr)
+  return _internal_access_addr();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void SigninData::set_access_addr(ArgT0&& arg0, ArgT... args) {
+ 
+ access_addr_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:oceanim.SigninData.access_addr)
+}
+inline std::string* SigninData::mutable_access_addr() {
+  std::string* _s = _internal_mutable_access_addr();
+  // @@protoc_insertion_point(field_mutable:oceanim.SigninData.access_addr)
+  return _s;
+}
+inline const std::string& SigninData::_internal_access_addr() const {
+  return access_addr_.Get();
+}
+inline void SigninData::_internal_set_access_addr(const std::string& value) {
+  
+  access_addr_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* SigninData::_internal_mutable_access_addr() {
+  
+  return access_addr_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* SigninData::release_access_addr() {
+  // @@protoc_insertion_point(field_release:oceanim.SigninData.access_addr)
+  return access_addr_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void SigninData::set_allocated_access_addr(std::string* access_addr) {
+  if (access_addr != nullptr) {
+    
+  } else {
+    
+  }
+  access_addr_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), access_addr,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:oceanim.SigninData.access_addr)
 }
 
 // -------------------------------------------------------------------

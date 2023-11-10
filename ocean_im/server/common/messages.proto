@@ -11,6 +11,8 @@ message SigninData{
 
     string password = 2;
     int32 client_timestamp = 3;
+
+    string access_addr=4;
 }
 
 
