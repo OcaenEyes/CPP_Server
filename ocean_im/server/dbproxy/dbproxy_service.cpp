@@ -119,7 +119,7 @@ namespace oceanim
                                             google::protobuf::Closure *done)
     {
         brpc::ClosureGuard done_guard(done);
-        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+        brpc::Controller *cntl = static_cast<brpc::Controller *>(controller);
 
         try
         {
@@ -181,10 +181,24 @@ namespace oceanim
                     soci::use(new_msg->msg_time());
             }
         }
-        catch (const std::exception &e)
+        catch (const soci::soci_error &e)
         {
-            std::cerr << e.what() << '\n';
+            LOG(ERROR) << "Fail to insert int messages"
+                       << "sender=" << new_msg->sender()
+                       << "receiver=" << new_msg->receiver()
+                       << "msg_id=" << new_msg->sender_msg_id()
+                       << ". " << e.what();
+            cntl->SetFailed(EINVAL, "Fail to insert to message.");
+            return;
         }
+
+        UserLastSendData user_last_send_data;
+        user_last_send_data.set_user_id(new_msg->sender());
+        user_last_send_data.set_client_time(new_msg->client_time());
+        user_last_send_data.set_msg_time(new_msg->msg_time());
+        user_last_send_data.set_msg_id(new_msg->sender_msg_id());
+
+        SetUserLastSendData_(cntl, &user_last_send_data);
     }
 
     void DbproxyServiceImpl::SaveGroupMsg(google::protobuf::RpcController *controller,
@@ -243,8 +257,44 @@ namespace oceanim
     {
     }
 
-    void DbproxyServiceImpl::SetUserLastSendData_(brpc::Controller *cntl, const UserLastSendData *user_last_send_data)
+    void DbproxyServiceImpl::SetUserLastSendData_(brpc::Controller *pcntl, const UserLastSendData *user_last_send_data)
     {
+        const char *cmd = "eval \""
+                          "local a = redis.call('GET,KEYS[1])"
+                          " if (a == false or tonumber(cjson.decode(a)[2]) < tonumber(ARGC[2])) then"
+                          " redis.call('SETEX',KEYS[1],3600, cjson.encode({ARGV[1],ARGV[2],ARGV[3]}))"
+                          "return 1"
+                          " else"
+                          "return 0"
+                          " end\" ";
+
+        std::ostringstream oss;
+        oss << cmd << 1 << " "
+            << "{" << user_last_send_data->user_id() << "}"
+            << "u "
+            << user_last_send_data->msg_id() << " "
+            << user_last_send_data->client_time() << " "
+            << user_last_send_data->msg_time();
+
+        brpc::RedisRequest request;
+        if (!request.AddCommand(oss.str()))
+        {
+            LOG(ERROR) << "Fail to add command";
+        }
+
+        brpc::RedisResponse response;
+        brpc::Controller cntl;
+
+        redis_channel_.CallMethod(NULL, &cntl, &request, &response, NULL);
+        if (cntl.Failed())
+        {
+            LOG(ERROR) << "fail to access redis, " << cntl.ErrorText();
+            pcntl->SetFailed(EINVAL, "fail to set user last send data");
+        }
+        else
+        {
+            LOG(INFO) << "redis reply=" << response;
+        }
     }
 
 } // namespace oceanim
