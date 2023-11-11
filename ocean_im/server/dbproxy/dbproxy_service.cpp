@@ -261,14 +261,14 @@ namespace oceanim
     }
 
     void DbproxyServiceImpl::GetUserLastSendData(google::protobuf::RpcController *controller,
-                                                 const UserId *user_id,
+                                                 const UserId *userid,
                                                  UserLastSendData *user_last_send_data,
                                                  google::protobuf::Closure *done)
     {
         brpc::ClosureGuard done_guard(done);
         brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
 
-        const user_id_t user_id = user_id->user_id();
+        const user_id_t user_id = userid->user_id();
         brpc::RedisRequest request;
 
         if (!request.AddCommand("GET {%ld}u", user_id))
@@ -287,7 +287,50 @@ namespace oceanim
         else
         {
             LOG(INFO) << "redis reply=" << response;
-            int64_t
+            int64_t msg_id = 0;
+            int client_time = 0;
+            int msg_time = 0;
+            if (response.reply(0).is_string())
+            {
+                sscanf(response.reply(0).c_str(), "[%ld,%d,%d]", &msg_id, &client_time, &msg_time);
+            }
+            else
+            {
+                try
+                {
+                    auto pool = ChooseDatabase(user_id);
+                    soci::session sql(*pool);
+                    soci::indicator ind;
+                    sql << "SELECT msg_id,UNIX_TIMESTAMP(client_time),UNIX_TIMESTAMP(msg_time) "
+                           "FROM messages "
+                           "WHERE user_id=:user_id and sender = :sender "
+                           "AND client_time = (SELECT MAX(client_time) FROM messages WHERE user_id= :user_id2 AND sender=:sender2);",
+                        soci::into(msg_id, ind),
+                        soci::into(client_time),
+                        soci::into(msg_time),
+
+                        soci::use(user_id),
+                        soci::use(user_id),
+                        soci::use(user_id),
+                        soci::use(user_id);
+
+                    if (ind != soci::indicator::i_ok)
+                    {
+                        msg_id = 0;
+                        client_time = 0;
+                        msg_time = 0;
+                    }
+                }
+                catch (const std::exception &e)
+                {
+                    LOG(ERROR) << "Fail to insert into messages. " << e.what();
+                    pcntl->SetFailed(EINVAL, "Fail to select from messages. ");
+                    return;
+                }
+            }
+            user_last_send_data->set_msg_id(msg_id);
+            user_last_send_data->set_client_time(client_time);
+            user_last_send_data->set_msg_time(msg_time);
         }
     }
 
@@ -363,27 +406,175 @@ namespace oceanim
                                      Msgs *msgs,
                                      google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+
+        const user_id_t user_id = msg_range->user_id();
+        auto pool = ChooseDatabase(user_id);
+        soci::session sql(*pool);
+
+        try
+        {
+            soci::rowset<soci::row> rs = (sql.prepare << "SELECT sender, receiver, msg_id,group_id,message, "
+                                                         "UNIX_TIMESTAMP(client_time),UNIX_TIMESTAMP(msg_time)"
+                                                         "FROM messages "
+                                                         "WHERE user_id=:user_id AND msg_id BETWEEN :start_msg_id AND :end_msg_id AND deleted =0",
+                                          soci::use(msg_range->user_id()),
+                                          soci::use(msg_range->start_msg_id()),
+                                          soci::use(msg_range->end_msg_id()));
+
+            for (auto i = rs.begin(); i != rs.end(); i++)
+            {
+                soci::row const &row = *i;
+
+                auto msg = msgs->add_msgs();
+                msg->set_user_id(user_id);
+                msg->set_sender(row.get<long long>(0));
+                msg->set_receiver(row.get<long long>(1));
+                msg->set_msg_id(row.get<long long>(2));
+                msg->set_group_id(row.get<long long>(3));
+                msg->set_message(row.get<std::string>(4));
+                msg->set_client_time(static_cast<int>(row.get<long long>(5)));
+                msg->set_msg_time(static_cast<int>(row.get<long long>(6)));
+
+                DLOG(INFO) << "user_id=" << msg->user_id()
+                           << "sender=" << msg->sender()
+                           << "receiver=" << msg->receiver()
+                           << "msg_id=" << msg->msg_id()
+                           << "group_id=" << msg->group_id()
+                           << "message=" << msg->message()
+                           << "client_time=" << msg->client_time()
+                           << "msg_time=" << msg->msg_time();
+            }
+        }
+        catch (const soci::soci_error &e)
+        {
+            LOG(ERROR) << e.what();
+            pcntl->SetFailed(EINVAL, "fail to select from messages. ");
+        }
+        DLOG_IF(INFO, msgs->msgs_size() == 0) << "Select return nil. user_id=" << msg_range->user_id()
+                                              << "start_msg_id=" << msg_range->start_msg_id()
+                                              << "end_msg_id=" << msg_range->end_msg_id();
     }
 
     void DbproxyServiceImpl::GetFriends(google::protobuf::RpcController *controller,
-                                        const UserId *user_id,
+                                        const UserId *userid,
                                         UserInfos *user_infos,
                                         google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+
+        const user_id_t user_id = userid->user_id();
+        auto pool = ChooseDatabase(user_id);
+        soci::session sql(*pool);
+
+        try
+        {
+            soci::rowset<soci::row> rs = (sql.prepare << "SELECT peer_id,peer_name"
+                                                         "FROM friends"
+                                                         "WHERE user_id=:user_id AND deleted=0",
+                                          soci::use(user_id));
+            DLOG(INFO) << "sql=" << sql.get_query();
+
+            for (auto i = rs.begin(); i != rs.end(); i++)
+            {
+                soci::row const &row = *i;
+
+                auto user_info = user_infos->add_user_infos();
+                user_info->set_user_id(row.get<long long>(0));
+                user_info->set_name(row.get<std::string>(1));
+
+                DLOG(INFO) << "peer_id=" << user_info->user_id()
+                           << "name=" << user_info->name();
+            }
+        }
+        catch (const soci::soci_error &e)
+        {
+            LOG(ERROR) << e.what();
+            pcntl->SetFailed(EINVAL, "fail to select from friends.");
+        }
+        DLOG_IF(INFO, user_infos->user_infos_size() == 0) << "Select friends return nil. user_id=" << user_id;
     }
 
     void DbproxyServiceImpl::GetGroups(google::protobuf::RpcController *controller,
-                                       const UserId *user_id,
+                                       const UserId *userid,
                                        GroupInfos *group_infos,
                                        google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+
+        const user_id_t user_id = userid->user_id();
+        auto pool = ChooseDatabase(user_id);
+        soci::session sql(*pool);
+
+        try
+        {
+            soci::rowset<soci::row> rs = (sql.prepare << "SELECT group_id,group_name"
+                                                         "FROM group_members"
+                                                         "WHERE user_id=:user_id",
+                                          soci::use(user_id));
+            DLOG(INFO) << "sql=" << sql.get_query();
+
+            for (auto i = rs.begin(); i != rs.end(); i++)
+            {
+                soci::row const &row = *i;
+
+                auto group_info = group_infos->add_group_infos();
+                group_info->set_group_id(row.get<long long>(0));
+                group_info->set_name(row.get<std::string>(1));
+
+                DLOG(INFO) << "group_id=" << group_info->group_id()
+                           << "name=" << group_info->name();
+            }
+        }
+        catch (const soci::soci_error &e)
+        {
+            LOG(ERROR) << e.what();
+            pcntl->SetFailed(EINVAL, "fail to select from group_members.");
+        }
+        DLOG_IF(INFO, group_infos->group_infos_size() == 0) << "Select group_members return nil. user_id=" << user_id;
     }
 
     void DbproxyServiceImpl::GetGroupMembers(google::protobuf::RpcController *controller,
-                                             const GroupId *group_id,
+                                             const GroupId *groupid,
                                              UserInfos *user_infos,
                                              google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+        const group_id_t group_id = groupid->group_id();
+
+        const pool = ChooseDatabase(group_id);
+        soci::session sql(*pool);
+
+        try
+        {
+            soci::rowset<soci::row> rs = (sql.prepare << "SELECT user_id,user_name "
+                                                         "FROM group_members "
+                                                         "WHERE group_id =:group_id",
+                                          soci::use(group_id));
+            DLOG(INFO) << "sql=" << sql.get_query();
+
+            for (auto i = rs.begin(); i != rs.end(); ++i)
+            {
+                soci::row const &row = *i;
+
+                auto user_info = user_infos->add_user_infos();
+                user_info->set_user_id(row.get<long long>(0));
+                user_info->set_name(row.get<std::string>(1));
+
+                DLOG(INFO) << "user_id=" << user_info->user_id()
+                           << " name=" << user_info->name();
+            }
+        }
+        catch (const soci::soci_error &e)
+        {
+            LOG(ERROR) << e.what();
+            pcntl->SetFailed(EINVAL, "Fail to select from group_members.");
+        }
+        DLOG_IF(INFO, user_infos->user_infos_size() == 0) << "Select group_members return nil. group_id=" << group_id;
     }
 
     void DbproxyServiceImpl::SetUserLastSendData_(brpc::Controller *pcntl, const UserLastSendData *user_last_send_data)

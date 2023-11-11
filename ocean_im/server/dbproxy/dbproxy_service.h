@@ -58,7 +58,7 @@ namespace oceanim
 
         void GetUserLastSendData(
             google::protobuf::RpcController *controller,
-            const UserId *user_id,
+            const UserId *userid,
             UserLastSendData *user_last_send_data,
             google::protobuf::Closure *done) override;
 
@@ -75,19 +75,19 @@ namespace oceanim
 
         void GetFriends(
             google::protobuf::RpcController *controller,
-            const UserId *user_id,
+            const UserId *userid,
             UserInfos *user_infos,
             google::protobuf::Closure *done) override;
 
         void GetGroups(
             google::protobuf::RpcController *controller,
-            const UserId *user_id,
+            const UserId *userid,
             GroupInfos *group_infos,
             google::protobuf::Closure *done) override;
 
         void GetGroupMembers(
             google::protobuf::RpcController *controller,
-            const GroupId *group_id,
+            const GroupId *groupid,
             UserInfos *user_infos,
             google::protobuf::Closure *done) override;
 
