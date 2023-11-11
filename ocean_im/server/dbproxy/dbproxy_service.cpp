@@ -202,31 +202,160 @@ namespace oceanim
     }
 
     void DbproxyServiceImpl::SaveGroupMsg(google::protobuf::RpcController *controller,
-                                          const NewGroupMsg *new_msg,
+                                          const NewGroupMsg *new_group_msg,
                                           Reply *reply,
                                           google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *cntl = static_cast<brpc::Controller *>(controller);
+
+        const user_id_t sender_user_id = new_group_msg->sender_user_id();
+        const group_id_t group_id = new_group_msg->group_id();
+
+        try
+        {
+            for (int i = 0, size = new_group_msg->user_and_msgids_size(); i < size; i++)
+            {
+                const auto &user_add_msgid = new_group_msg->user_and_msgids(i);
+                auto pool = ChooseDatabase(user_add_msgid.user_id());
+
+                soci::session sql(*pool);
+                sql << "INSERT INTO messages(user_id, sender,receiver,msg_id,group_id,message,client_time, msg_time) "
+                       "VALUES (:user_id,:sender,:receiver,:msg_id,:group_id,:message,FROM_UNIXTIME(:client_time),FROM_UNIXTIME(:msg_time)) ",
+
+                    soci::use(user_add_msgid.user_id()),
+                    soci::use(sender_user_id),
+                    soci::use(group_id),
+                    soci::use(user_add_msgid.msg_id()),
+
+                    soci::use(group_id),
+                    soci::use(new_group_msg->message()),
+                    soci::use(new_group_msg->client_time()),
+                    soci::use(new_group_msg->msg_time());
+            }
+        }
+        catch (const std::exception &e)
+        {
+            LOG(ERROR) << "Fail to insert into messages. " << e.what();
+            cntl->SetFailed(EINVAL, "fail to insert into messgaes.");
+            return;
+        }
+
+        UserLastSendData user_last_send_data;
+        user_last_send_data.set_user_id(sender_user_id);
+        user_last_send_data.set_client_time(new_group_msg->client_time());
+        user_last_send_data.set_msg_time(new_group_msg->msg_time());
+        user_last_send_data.set_msg_id(new_group_msg->sender_msg_id());
+        SetUserLastSendData_(cntl, &user_last_send_data);
     }
 
     void DbproxyServiceImpl::SetUserLastSendData(google::protobuf::RpcController *controller,
-                                                 const UserLastSendData *,
+                                                 const UserLastSendData *user_last_send_data,
                                                  Pong *,
                                                  google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+
+        SetUserLastSendData_(pcntl, user_last_send_data);
     }
 
     void DbproxyServiceImpl::GetUserLastSendData(google::protobuf::RpcController *controller,
-                                                 const UserId *,
-                                                 UserLastSendData *,
+                                                 const UserId *user_id,
+                                                 UserLastSendData *user_last_send_data,
                                                  google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+
+        const user_id_t user_id = user_id->user_id();
+        brpc::RedisRequest request;
+
+        if (!request.AddCommand("GET {%ld}u", user_id))
+        {
+            LOG(ERROR) << "Fail to add command";
+        }
+        brpc::RedisResponse response;
+        brpc::Controller cntl;
+
+        redis_channel_.CallMethod(NULL, &cntl, &request, &response, NULL);
+        if (cntl.Failed())
+        {
+            LOG(ERROR) << "Fail to access redis, " << cntl.ErrorText();
+            pcntl->SetFailed(EINVAL, "Fail to get data from redis.");
+        }
+        else
+        {
+            LOG(INFO) << "redis reply=" << response;
+            int64_t
+        }
     }
 
     void DbproxyServiceImpl::GetSessions(google::protobuf::RpcController *controller,
-                                         const UserIds *,
-                                         Sessions *,
+                                         const UserIds *user_ids,
+                                         Sessions *sessions,
                                          google::protobuf::Closure *done)
     {
+        brpc::ClosureGuard done_guard(done);
+        brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
+        std::ostringstream oss;
+        oss << "MGET ";
+
+        int size = user_ids->user_ids_size();
+        for (int i = 0; i < size; i++)
+        {
+            oss << "{" << user_ids->user_ids(i) << "}a";
+        }
+
+        brpc::RedisRequest request;
+        if (!request.AddCommand(oss.str().c_str()))
+        {
+            LOG(ERROR) << "Fail to call " << oss.str();
+        }
+
+        brpc::RedisResponse response;
+        brpc::Controller cntl;
+        DLOG(INFO) << "Querying redis. " << oss.str();
+        redis_channel_.CallMethod(NULL, &cntl, &request, &response, NULL);
+
+        if (cntl.Failed())
+        {
+            LOG(ERROR) << "Fail to access redis. " << cntl.ErrorText();
+            pcntl->SetFailed(cntl.ErrorCode(), cntl.ErrorText().c_str());
+        }
+        else
+        {
+            DLOG(INFO) << "redis reply(0) size=" << response.reply(0).size();
+            DLOG(INFO) << "redis reply=" << response;
+            CHECK_EQ(response.reply(0).size(), user_ids->user_ids_size());
+            if (response.reply(0).is_array())
+            {
+                for (size_t i = 0; i < response.reply(0).size(); i++)
+                {
+                    DLOG(INFO) << "reply(0).[" << i << "]="
+                               << " is_string=" << response.reply(0)[i].is_string();
+                    DLOG(INFO) << "is_array=" << response.reply(0)[i].is_array();
+                    DLOG(INFO) << "is_error=" << response.reply(0)[i].is_error();
+                    DLOG(INFO) << "is_nil=" << response.reply(0)[i].is_nil();
+                    DLOG(INFO) << "is_integer=" << response.reply(0)[i].is_integer();
+
+                    auto session = sessions->add_sessions();
+                    session->set_user_id(user_ids->user_ids(i));
+                    if (response.reply(0)[i].is_string())
+                    {
+                        session->set_has_session(true);
+                        session->set_addr(response.reply(0)[i].c_str());
+                    }
+                    else
+                    {
+                        session->set_has_session(false);
+                    }
+                    DLOG(INFO) << "session.has_session=" << session->has_session() << " "
+                               << "session.user_id=" << session->user_id() << " "
+                               << "session.addr=" << session->addr();
+                }
+            }
+        }
     }
 
     void DbproxyServiceImpl::GetMsgs(google::protobuf::RpcController *controller,

@@ -2615,6 +2615,7 @@ class NewGroupMsg final :
     kSenderUserIdFieldNumber = 3,
     kSenderMsgIdFieldNumber = 4,
     kMsgTimeFieldNumber = 6,
+    kClientTimeFieldNumber = 7,
   };
   // repeated .oceanim.UserAndMsgId user_and_msgids = 2;
   int user_and_msgids_size() const;
@@ -2684,6 +2685,15 @@ class NewGroupMsg final :
   void _internal_set_msg_time(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
+  // int32 client_time = 7;
+  void clear_client_time();
+  ::PROTOBUF_NAMESPACE_ID::int32 client_time() const;
+  void set_client_time(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_client_time() const;
+  void _internal_set_client_time(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:oceanim.NewGroupMsg)
  private:
   class _Internal;
@@ -2697,6 +2707,7 @@ class NewGroupMsg final :
   ::PROTOBUF_NAMESPACE_ID::int64 sender_user_id_;
   ::PROTOBUF_NAMESPACE_ID::int64 sender_msg_id_;
   ::PROTOBUF_NAMESPACE_ID::int32 msg_time_;
+  ::PROTOBUF_NAMESPACE_ID::int32 client_time_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_messages_2eproto;
 };
@@ -4942,6 +4953,26 @@ inline void NewGroupMsg::_internal_set_msg_time(::PROTOBUF_NAMESPACE_ID::int32 v
 inline void NewGroupMsg::set_msg_time(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_msg_time(value);
   // @@protoc_insertion_point(field_set:oceanim.NewGroupMsg.msg_time)
+}
+
+// int32 client_time = 7;
+inline void NewGroupMsg::clear_client_time() {
+  client_time_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 NewGroupMsg::_internal_client_time() const {
+  return client_time_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 NewGroupMsg::client_time() const {
+  // @@protoc_insertion_point(field_get:oceanim.NewGroupMsg.client_time)
+  return _internal_client_time();
+}
+inline void NewGroupMsg::_internal_set_client_time(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  client_time_ = value;
+}
+inline void NewGroupMsg::set_client_time(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_client_time(value);
+  // @@protoc_insertion_point(field_set:oceanim.NewGroupMsg.client_time)
 }
 
 // -------------------------------------------------------------------

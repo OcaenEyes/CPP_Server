@@ -99,6 +99,7 @@ message NewGroupMsg {
 
     string message =5;
     int32 msg_time =6;
+    int32 client_time=7;
 }
 
 enum DataType{

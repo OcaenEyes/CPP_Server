@@ -214,7 +214,8 @@ constexpr NewGroupMsg::NewGroupMsg(
   , group_id_(int64_t{0})
   , sender_user_id_(int64_t{0})
   , sender_msg_id_(int64_t{0})
-  , msg_time_(0){}
+  , msg_time_(0)
+  , client_time_(0){}
 struct NewGroupMsgDefaultTypeInternal {
   constexpr NewGroupMsgDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -454,6 +455,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_messages_2eproto::offsets[] PR
   PROTOBUF_FIELD_OFFSET(::oceanim::NewGroupMsg, sender_msg_id_),
   PROTOBUF_FIELD_OFFSET(::oceanim::NewGroupMsg, message_),
   PROTOBUF_FIELD_OFFSET(::oceanim::NewGroupMsg, msg_time_),
+  PROTOBUF_FIELD_OFFSET(::oceanim::NewGroupMsg, client_time_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::oceanim::Msg, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -530,13 +532,13 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 97, -1, -1, sizeof(::oceanim::UserAndMsgId)},
   { 105, -1, -1, sizeof(::oceanim::NewPrivateMsg)},
   { 118, -1, -1, sizeof(::oceanim::NewGroupMsg)},
-  { 130, -1, -1, sizeof(::oceanim::Msg)},
-  { 144, -1, -1, sizeof(::oceanim::Msgs)},
-  { 151, -1, -1, sizeof(::oceanim::MsgReply)},
-  { 160, -1, -1, sizeof(::oceanim::MsgIdRange)},
-  { 169, -1, -1, sizeof(::oceanim::Ping)},
-  { 176, -1, -1, sizeof(::oceanim::Pong)},
-  { 183, -1, -1, sizeof(::oceanim::Reply)},
+  { 131, -1, -1, sizeof(::oceanim::Msg)},
+  { 145, -1, -1, sizeof(::oceanim::Msgs)},
+  { 152, -1, -1, sizeof(::oceanim::MsgReply)},
+  { 161, -1, -1, sizeof(::oceanim::MsgIdRange)},
+  { 170, -1, -1, sizeof(::oceanim::Ping)},
+  { 177, -1, -1, sizeof(::oceanim::Pong)},
+  { 184, -1, -1, sizeof(::oceanim::Reply)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -587,29 +589,29 @@ const char descriptor_table_protodef_messages_2eproto[] PROTOBUF_SECTION_VARIABL
   "nder\030\001 \001(\003\022\025\n\rsender_msg_id\030\002 \001(\003\022\020\n\010rec"
   "eiver\030\003 \001(\003\022\027\n\017receiver_msg_id\030\004 \001(\003\022\017\n\007"
   "message\030\006 \001(\t\022\020\n\010msg_time\030\007 \001(\005\022\023\n\013clien"
-  "t_time\030\010 \001(\005\"\241\001\n\013NewGroupMsg\022\020\n\010group_id"
+  "t_time\030\010 \001(\005\"\266\001\n\013NewGroupMsg\022\020\n\010group_id"
   "\030\001 \001(\003\022.\n\017user_and_msgids\030\002 \003(\0132\025.oceani"
   "m.UserAndMsgId\022\026\n\016sender_user_id\030\003 \001(\003\022\025"
   "\n\rsender_msg_id\030\004 \001(\003\022\017\n\007message\030\005 \001(\t\022\020"
-  "\n\010msg_time\030\006 \001(\005\"\222\001\n\003Msg\022\017\n\007user_id\030\001 \001("
-  "\003\022\016\n\006msg_id\030\002 \001(\003\022\016\n\006sender\030\003 \001(\003\022\020\n\010rec"
-  "eiver\030\004 \001(\003\022\017\n\007message\030\005 \001(\t\022\020\n\010group_id"
-  "\030\006 \001(\003\022\023\n\013client_time\030\010 \001(\005\022\020\n\010msg_time\030"
-  "\t \001(\005\"\"\n\004Msgs\022\032\n\004msgs\030\001 \003(\0132\014.oceanim.Ms"
-  "g\"A\n\010MsgReply\022\020\n\010msg_time\030\002 \001(\005\022\016\n\006msg_i"
-  "d\030\003 \001(\003\022\023\n\013last_msg_id\030\004 \001(\003\"G\n\nMsgIdRan"
-  "ge\022\017\n\007user_id\030\001 \001(\003\022\024\n\014start_msg_id\030\002 \001("
-  "\003\022\022\n\nend_msg_id\030\003 \001(\003\"\027\n\004Ping\022\017\n\007user_id"
-  "\030\001 \001(\003\"\033\n\004Pong\022\023\n\013last_msg_id\030\001 \001(\003\"\007\n\005R"
-  "eply*!\n\007MsgType\022\013\n\007PRIVATE\020\000\022\t\n\005GROUP\020\001*"
-  "x\n\010DataType\022\010\n\004NONE\020\000\022\023\n\017PRIVATE_MESSAGE"
-  "\020\001\022\021\n\rGROUP_MESSAGE\020\002\022\013\n\007ADDUSER\020\003\022\016\n\nRE"
-  "MOVEUSER\020\004\022\014\n\010ADDGROUP\020\005\022\017\n\013REMOVEGROUP\020"
-  "\006b\006proto3"
+  "\n\010msg_time\030\006 \001(\005\022\023\n\013client_time\030\007 \001(\005\"\222\001"
+  "\n\003Msg\022\017\n\007user_id\030\001 \001(\003\022\016\n\006msg_id\030\002 \001(\003\022\016"
+  "\n\006sender\030\003 \001(\003\022\020\n\010receiver\030\004 \001(\003\022\017\n\007mess"
+  "age\030\005 \001(\t\022\020\n\010group_id\030\006 \001(\003\022\023\n\013client_ti"
+  "me\030\010 \001(\005\022\020\n\010msg_time\030\t \001(\005\"\"\n\004Msgs\022\032\n\004ms"
+  "gs\030\001 \003(\0132\014.oceanim.Msg\"A\n\010MsgReply\022\020\n\010ms"
+  "g_time\030\002 \001(\005\022\016\n\006msg_id\030\003 \001(\003\022\023\n\013last_msg"
+  "_id\030\004 \001(\003\"G\n\nMsgIdRange\022\017\n\007user_id\030\001 \001(\003"
+  "\022\024\n\014start_msg_id\030\002 \001(\003\022\022\n\nend_msg_id\030\003 \001"
+  "(\003\"\027\n\004Ping\022\017\n\007user_id\030\001 \001(\003\"\033\n\004Pong\022\023\n\013l"
+  "ast_msg_id\030\001 \001(\003\"\007\n\005Reply*!\n\007MsgType\022\013\n\007"
+  "PRIVATE\020\000\022\t\n\005GROUP\020\001*x\n\010DataType\022\010\n\004NONE"
+  "\020\000\022\023\n\017PRIVATE_MESSAGE\020\001\022\021\n\rGROUP_MESSAGE"
+  "\020\002\022\013\n\007ADDUSER\020\003\022\016\n\nREMOVEUSER\020\004\022\014\n\010ADDGR"
+  "OUP\020\005\022\017\n\013REMOVEGROUP\020\006b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_messages_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_messages_2eproto = {
-  false, false, 1609, descriptor_table_protodef_messages_2eproto, "messages.proto", 
+  false, false, 1630, descriptor_table_protodef_messages_2eproto, "messages.proto", 
   &descriptor_table_messages_2eproto_once, nullptr, 0, 22,
   schemas, file_default_instances, TableStruct_messages_2eproto::offsets,
   file_level_metadata_messages_2eproto, file_level_enum_descriptors_messages_2eproto, file_level_service_descriptors_messages_2eproto,
@@ -3840,8 +3842,8 @@ NewGroupMsg::NewGroupMsg(const NewGroupMsg& from)
       GetArenaForAllocation());
   }
   ::memcpy(&group_id_, &from.group_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&msg_time_) -
-    reinterpret_cast<char*>(&group_id_)) + sizeof(msg_time_));
+    static_cast<size_t>(reinterpret_cast<char*>(&client_time_) -
+    reinterpret_cast<char*>(&group_id_)) + sizeof(client_time_));
   // @@protoc_insertion_point(copy_constructor:oceanim.NewGroupMsg)
 }
 
@@ -3849,8 +3851,8 @@ void NewGroupMsg::SharedCtor() {
 message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&group_id_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&msg_time_) -
-    reinterpret_cast<char*>(&group_id_)) + sizeof(msg_time_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&client_time_) -
+    reinterpret_cast<char*>(&group_id_)) + sizeof(client_time_));
 }
 
 NewGroupMsg::~NewGroupMsg() {
@@ -3884,8 +3886,8 @@ void NewGroupMsg::Clear() {
   user_and_msgids_.Clear();
   message_.ClearToEmpty();
   ::memset(&group_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&msg_time_) -
-      reinterpret_cast<char*>(&group_id_)) + sizeof(msg_time_));
+      reinterpret_cast<char*>(&client_time_) -
+      reinterpret_cast<char*>(&group_id_)) + sizeof(client_time_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -3946,6 +3948,14 @@ const char* NewGroupMsg::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
           msg_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 client_time = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+          client_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -4021,6 +4031,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(6, this->_internal_msg_time(), target);
   }
 
+  // int32 client_time = 7;
+  if (this->_internal_client_time() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(7, this->_internal_client_time(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -4071,6 +4087,11 @@ size_t NewGroupMsg::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_msg_time());
   }
 
+  // int32 client_time = 7;
+  if (this->_internal_client_time() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_client_time());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
@@ -4109,6 +4130,9 @@ void NewGroupMsg::MergeFrom(const NewGroupMsg& from) {
   if (from._internal_msg_time() != 0) {
     _internal_set_msg_time(from._internal_msg_time());
   }
+  if (from._internal_client_time() != 0) {
+    _internal_set_client_time(from._internal_client_time());
+  }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -4135,8 +4159,8 @@ void NewGroupMsg::InternalSwap(NewGroupMsg* other) {
       &other->message_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(NewGroupMsg, msg_time_)
-      + sizeof(NewGroupMsg::msg_time_)
+      PROTOBUF_FIELD_OFFSET(NewGroupMsg, client_time_)
+      + sizeof(NewGroupMsg::client_time_)
       - PROTOBUF_FIELD_OFFSET(NewGroupMsg, group_id_)>(
           reinterpret_cast<char*>(&group_id_),
           reinterpret_cast<char*>(&other->group_id_));

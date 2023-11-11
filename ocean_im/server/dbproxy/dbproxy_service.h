@@ -46,26 +46,26 @@ namespace oceanim
                             google::protobuf::Closure *done) override;
 
         void SaveGroupMsg(google::protobuf::RpcController *controller,
-                          const NewGroupMsg *new_msg,
+                          const NewGroupMsg *new_group_msg,
                           Reply *reply,
                           google::protobuf::Closure *done) override;
 
         void SetUserLastSendData(
             google::protobuf::RpcController *controller,
-            const UserLastSendData *,
+            const UserLastSendData *user_last_send_data,
             Pong *,
             google::protobuf::Closure *done) override;
 
         void GetUserLastSendData(
             google::protobuf::RpcController *controller,
-            const UserId *,
-            UserLastSendData *,
+            const UserId *user_id,
+            UserLastSendData *user_last_send_data,
             google::protobuf::Closure *done) override;
 
         void GetSessions(
             google::protobuf::RpcController *controller,
-            const UserIds *,
-            Sessions *,
+            const UserIds *user_ids,
+            Sessions *sessions,
             google::protobuf::Closure *done) override;
 
         void GetMsgs(google::protobuf::RpcController *controller,
