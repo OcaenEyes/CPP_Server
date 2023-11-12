@@ -12,4 +12,6 @@ set(SOCI_DIR ${THIRD_DIR}/soci4.0.3)
 include_directories(${SOCI_DIR}/include)
 link_libraries(${SOCI_DIR}/lib)
 
+add_executable(oceanim )
+
 
