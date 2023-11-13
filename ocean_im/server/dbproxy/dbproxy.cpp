@@ -2,9 +2,9 @@
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-#include <brpc1.7/include/brpc/server.h>
-#include <brpc1.7/include/brpc/channel.h>
-#include <brpc1.7/include/butil/status.h>
+#include <brpc/server.h>
+#include <brpc/channel.h>
+#include <butil/status.h>
 
 #include "util/initialize.h"
 #include "type.h"

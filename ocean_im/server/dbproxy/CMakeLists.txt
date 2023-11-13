@@ -1,4 +1,4 @@
-project(logic)
+project(dbproxy)
 
 set(BRPC_INCLUDE_PATH "thirds/brpc1.7/include")
 set(BRPC_LIB "thirds/brpc1.7/lib/libbrpc.a")

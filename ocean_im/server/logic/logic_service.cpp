@@ -7,9 +7,9 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <bthread/bthread.h>
-#include <brpc1.7/include/brpc/closure_guard.h>
-#include <brpc1.7/include/brpc/controller.h>
-#include <brpc1.7/include/brpc/options.pb.h>
+#include <brpc/closure_guard.h>
+#include <brpc/controller.h>
+#include <brpc/options.pb.h>
 
 DEFINE_int32(access_max_retry, 3, "max retried(not including thi first rpc)");
 DEFINE_string(access_connection_type, "single", "Connection type. Available values: single, pooled, short");

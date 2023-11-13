@@ -1,4 +1,4 @@
-project(logic)
+project(access)
 
 set(BRPC_INCLUDE_PATH "thirds/brpc1.7/include")
 set(BRPC_LIB "thirds/brpc1.7/lib/libbrpc.a")
@@ -17,14 +17,16 @@ if((NOT BRPC_INCLUDE_PATH) or (NOT BRPC_LIB))
   message(FATAL_ERROR "fail to find brpc")
 endif()
 
-add_executable(${PROJECT_NAME} dbproxy.cpp dbproxy_servce.cpp dbproxy_servce.h)
+add_executable(${PROJECT_NAME} access.cpp access_servce.cpp access_servce.h)
+
+file(COPY ${PROJECT_SOURCE_DIR}/server_list
+     DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_SOURCE_DIR}/oceanim
           ${CMAKE_SOURCE_DIR}/oceanim/server
           ${CMAKE_BINARY_DIR}/oceanim/server
-          ${CMAKE_BINARY_DIR}/oceanim/server/access
           ${CMAKE_CURRENT_BINARY_DIR}
           ${BRPC_INCLUDE_PATH}
           ${SOCI_INCLUDE_PATH}
