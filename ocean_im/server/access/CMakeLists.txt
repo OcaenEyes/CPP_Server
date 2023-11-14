@@ -13,11 +13,11 @@ else()
   find_library(BRPC_LIB NAMES libbrpc.a brpc)
 endif()
 
-if((NOT BRPC_INCLUDE_PATH) or (NOT BRPC_LIB))
-  message(FATAL_ERROR "fail to find brpc")
-endif()
+# if((NOT BRPC_INCLUDE_PATH) or (NOT BRPC_LIB))
+#   message(FATAL_ERROR "fail to find brpc")
+# endif()
 
-add_executable(${PROJECT_NAME} access.cpp access_servce.cpp access_servce.h)
+add_executable(${PROJECT_NAME} access.cpp access_service.cpp access_service.h)
 
 file(COPY ${PROJECT_SOURCE_DIR}/server_list
      DESTINATION ${EXECUTABLE_OUTPUT_PATH})

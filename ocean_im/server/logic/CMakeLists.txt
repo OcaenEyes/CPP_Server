@@ -13,11 +13,11 @@ else()
   find_library(BRPC_LIB NAMES libbrpc.a brpc)
 endif()
 
-if((NOT BRPC_INCLUDE_PATH) or (NOT BRPC_LIB))
-  message(FATAL_ERROR "fail to find brpc")
-endif()
+# if((NOT BRPC_INCLUDE_PATH) or (NOT BRPC_LIB))
+#   message(FATAL_ERROR "fail to find brpc")
+# endif()
 
-add_executable(${PROJECT_NAME} dbproxy.cpp dbproxy_servce.cpp dbproxy_servce.h)
+add_executable(${PROJECT_NAME} logic.cpp logic_service.cpp logic_service.h)
 
 target_include_directories(
   ${PROJECT_NAME}
