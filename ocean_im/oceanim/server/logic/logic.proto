@@ -3,7 +3,7 @@ package oceanim;
 
 option cc_generic_services =true;
 
-import "server/common/messages.proto";
+import "common/messages.proto";
 
 // 编译命令
 // protoc --proto_path=/workspaces/CPP_Server/ocean_im --cpp_out=/workspaces/CPP_Server/ocean_im server/logic/logic.proto

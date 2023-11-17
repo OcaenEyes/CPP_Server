@@ -27,17 +27,19 @@ message("project_source_dir: ${PROJECT_SOURCE_DIR}")
 message("cmake_current_binary_dir: ${CMAKE_CURRENT_BINARY_DIR}")
 
 include(CompileProto)
-set(PROTO_FILES common/message.proto 
+set(PROTO_FILES common/messages.proto 
                 access/access.proto 
-                idgen/idegen.proto
+                idgen/idgen.proto
                 logic/logic.proto 
                 dbproxy/dbproxy.proto)
                 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/oceanim/server)
 set(PROTO_FLAGS ${PROTO_FLAGS} -I${PROTOBUF_INCLUDE_DIR})
 compile_proto(
-  PROTO_HDRS PROTO_SRCS ${PROJECT_BINARY_DIR}/oceanim/server
-  ${PROJECT_BINARY_DIR}/oceanim/server ${PROJECT_SOURCE_DIR}/oceanim/server
+  PROTO_HDRS PROTO_SRCS 
+  ${PROJECT_BINARY_DIR}/oceanim/server
+  ${PROJECT_BINARY_DIR}/oceanim/server 
+  ${PROJECT_SOURCE_DIR}/oceanim/server
   "${PROTO_FILES}")
 
 add_library(oceanim_proto_lib OBJECT ${PROTO_SRCS} ${PROTO_HDRS})
@@ -46,9 +48,9 @@ add_library(oceanim::proto ALIAS oceanim_proto_lib)
 target_include_directories(oceanim_proto_lib
                            PRIVATE ${PROJECT_BINARY_DIR}/oceanim/server)
 
-add_subdirectory(client)
-add_subdirectory(server/access)
-add_subdirectory(server/idgen)
+add_subdirectory(oceanim/client)
+add_subdirectory(oceanim/server/access)
+add_subdirectory(oceanim/server/idgen)
 
-add_subdirectory(server/dbproxy)
-add_subdirectory(server/logic)
+add_subdirectory(oceanim/server/dbproxy)
+add_subdirectory(oceanim/server/logic)

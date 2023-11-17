@@ -1,0 +1,6 @@
+syntax = "proto3";
+package oceanim;
+
+import "common/messages.proto";
+
+option cc_generic_services = true;

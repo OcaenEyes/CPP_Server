@@ -1,10 +1,10 @@
 project(dbproxy)
 
-set(BRPC_INCLUDE_PATH "thirds/brpc1.7/include")
-set(BRPC_LIB "thirds/brpc1.7/lib/libbrpc.a")
+set(BRPC_INCLUDE_PATH "../../thirds/brpc1.7/include")
+set(BRPC_LIB "../../thirds/brpc1.7/lib/libbrpc.a")
 
-set(SOCI_INCLUDE_PATH "thirds/soci4.0.3/include")
-set(SOCI_LIBRARY "thirds/soci4.0.3/lib")
+set(SOCI_INCLUDE_PATH "../../thirds/soci4.0.3/include")
+set(SOCI_LIBRARY "../../thirds/soci4.0.3/lib")
 
 find_path(BRPC_INCLUDE_PATH NAMES brpc/server.h)
 if(LINK_SO)
