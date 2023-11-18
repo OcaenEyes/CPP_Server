@@ -4,12 +4,12 @@
 #include "dbproxy.pb.h"
 #include "type.h"
 
-#include <brpc1.7/include/brpc/channel.h>
-#include <brpc1.7/include/brpc/redis.h>
+#include "brpc/channel.h"
+#include "brpc/redis.h"
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 // #include <soci/soci.h>
-#include <soci4.0.3/include/soci/soci.h>
+#include "soci/soci.h"
 
 namespace brpc
 {

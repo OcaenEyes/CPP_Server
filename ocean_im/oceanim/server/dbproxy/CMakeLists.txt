@@ -1,21 +1,12 @@
 project(dbproxy)
 
-set(BRPC_INCLUDE_PATH "../../thirds/brpc1.7/include")
-set(BRPC_LIB "../../thirds/brpc1.7/lib/libbrpc.a")
+set(BRPC_DIR /mnt/e/GitHub/CPP_Server/ocean_im/thirds/brpc1.7)
+find_library(BRPC_LIB NAMES libbrpc.a  PATHS ${BRPC_DIR}/lib NO_DEFAULT_PATH)
+set(BRPC_INCLUDE_PATH ${BRPC_DIR}/include)
 
-set(SOCI_INCLUDE_PATH "../../thirds/soci4.0.3/include")
-set(SOCI_LIBRARY "../../thirds/soci4.0.3/lib")
-
-find_path(BRPC_INCLUDE_PATH NAMES brpc/server.h)
-if(LINK_SO)
-  find_library(BRPC_LIB NAMES brpc)
-else()
-  find_library(BRPC_LIB NAMES libbrpc.a brpc)
-endif()
-
-# if((NOT BRPC_INCLUDE_PATH) or (NOT BRPC_LIB))
-#   message(FATAL_ERROR "fail to find brpc")
-# endif()
+set(SOCI_DIR /mnt/e/GitHub/CPP_Server/ocean_im/thirds/soci4.0.3)
+find_library(SOCI_LIB NAMES libsoci_core.a  PATHS ${SOCI_DIR}/lib NO_DEFAULT_PATH)
+set(SOCI_INCLUDE_PATH ${SOCI_DIR}/include)
 
 add_executable(${PROJECT_NAME} dbproxy.cpp dbproxy_service.cpp dbproxy_service.h)
 
@@ -39,5 +30,5 @@ target_link_libraries(
           glog::glog
           leveldb::leveldb
           oceanim::proto
-          ${SOCI_LIBRARY}
+          ${SOCI_LIB}
           dl)
