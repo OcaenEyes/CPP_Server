@@ -1,10 +1,16 @@
 project(logic)
 
-set(BRPC_DIR /mnt/e/GitHub/CPP_Server/ocean_im/thirds/brpc1.7)
+set(CMAKE_CXX_STANDARD 11)
+
+get_filename_component(TMPDIR1 ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
+get_filename_component(TMPDIR2 ${TMPDIR1} DIRECTORY)
+get_filename_component(PARENT_DIR ${TMPDIR2} DIRECTORY)
+
+set(BRPC_DIR ${PARENT_DIR}/thirds/brpc1.7)
 find_library(BRPC_LIB NAMES libbrpc.a  PATHS ${BRPC_DIR}/lib NO_DEFAULT_PATH)
 set(BRPC_INCLUDE_PATH ${BRPC_DIR}/include)
 
-set(SOCI_DIR /mnt/e/GitHub/CPP_Server/ocean_im/thirds/soci4.0.3)
+set(SOCI_DIR ${PARENT_DIR}/thirds/soci4.0.3)
 find_library(SOCI_LIB NAMES libsoci_core.a  PATHS ${SOCI_DIR}/lib NO_DEFAULT_PATH)
 set(SOCI_INCLUDE_PATH ${SOCI_DIR}/include)
 

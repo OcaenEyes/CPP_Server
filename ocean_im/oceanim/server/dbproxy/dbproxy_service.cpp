@@ -154,31 +154,35 @@ namespace oceanim
             }
             else
             {
-                soci::session sql(*pool);
-                sql << "INSERT INTO messages(user_id, sender,receiver,msg_id,group_id,message,client_time,msg_time) "
-                       "VALUES (:user_id,:sender,:receiver,:msg_id,:group_id,:message, FROM_UNIXTIME(:client_time), FROM_UNIXTIME(:msg_time));",
-                    soci::use(new_msg->sender()),
-                    soci::use(new_msg->sender()),
-                    soci::use(new_msg->receiver()),
-                    soci::use(new_msg->sender_msg_id()),
+                {
+                    soci::session sql(*pool);
+                    sql << "INSERT INTO messages(user_id, sender,receiver,msg_id,group_id,message,client_time,msg_time) "
+                           "VALUES (:user_id,:sender,:receiver,:msg_id,:group_id,:message, FROM_UNIXTIME(:client_time), FROM_UNIXTIME(:msg_time));",
+                        soci::use(new_msg->sender()),
+                        soci::use(new_msg->sender()),
+                        soci::use(new_msg->receiver()),
+                        soci::use(new_msg->sender_msg_id()),
 
-                    soci::use(0),
-                    soci::use(new_msg->message()),
-                    soci::use(new_msg->client_time()),
-                    soci::use(new_msg->msg_time());
+                        soci::use(0),
+                        soci::use(new_msg->message()),
+                        soci::use(new_msg->client_time()),
+                        soci::use(new_msg->msg_time());
+                }
 
-                soci::session sql(*peer_pool);
-                sql << "INSERT INTO messages(user_id, sender, receiver, msg_id, group_id, message, client_time, msg_time) "
-                       "VALUES (:user_id, :sender, :receiver, :receiver_msg_id, :group_id, :message, FROM_UNIXTIME(:client_send), FROM_UNIXTIME(:msg_time));",
-                    soci::use(new_msg->receiver()),
-                    soci::use(new_msg->sender()),
-                    soci::use(new_msg->receiver()),
-                    soci::use(new_msg->receiver_msg_id()),
+                {
+                    soci::session sql(*peer_pool);
+                    sql << "INSERT INTO messages(user_id, sender, receiver, msg_id, group_id, message, client_time, msg_time) "
+                           "VALUES (:user_id, :sender, :receiver, :receiver_msg_id, :group_id, :message, FROM_UNIXTIME(:client_send), FROM_UNIXTIME(:msg_time));",
+                        soci::use(new_msg->receiver()),
+                        soci::use(new_msg->sender()),
+                        soci::use(new_msg->receiver()),
+                        soci::use(new_msg->receiver_msg_id()),
 
-                    soci::use(0),
-                    soci::use(new_msg->message()),
-                    soci::use(new_msg->client_time()),
-                    soci::use(new_msg->msg_time());
+                        soci::use(0),
+                        soci::use(new_msg->message()),
+                        soci::use(new_msg->client_time()),
+                        soci::use(new_msg->msg_time());
+                }
             }
         }
         catch (const soci::soci_error &e)
@@ -546,7 +550,7 @@ namespace oceanim
         brpc::Controller *pcntl = static_cast<brpc::Controller *>(controller);
         const group_id_t group_id = groupid->group_id();
 
-        const pool = ChooseDatabase(group_id);
+        auto pool = ChooseDatabase(group_id);
         soci::session sql(*pool);
 
         try

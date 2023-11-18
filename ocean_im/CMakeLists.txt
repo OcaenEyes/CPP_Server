@@ -10,8 +10,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-include_directories(/mnt/e/GitHub/CPP_Server/ocean_im/thirds/brpc1.7/include
-                    /mnt/e/GitHub/CPP_Server/ocean_im/thirds/soci4.0.3/include)
+include_directories(${PROJECT_SOURCE_DIR}/thirds/brpc1.7/include
+                    ${PROJECT_SOURCE_DIR}/thirds/soci4.0.3/include)
 
 message("CMAKE_MODULE_PATH:${CMAKE_MODULE_PATH}")
 
