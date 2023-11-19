@@ -1,1 +1,5 @@
-cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/opt/third_party/soci -DSOCI_CXX11=ON
+[项目依赖]
+#soci4.0.3
+编译：cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/opt/third_party/soci -DSOCI_CXX11=ON4.0.0
+
+#brpc1.7

@@ -5,3 +5,4 @@
 ocean_net/thirds/yaml-cpp-main/
 **/lib
 **/bin
+**/brpc1.7
