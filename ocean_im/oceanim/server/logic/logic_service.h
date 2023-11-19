@@ -1,6 +1,21 @@
+/*
+ * @Author: OCEAN.GZY
+ * @Date: 2023-11-19 14:38:22
+ * @LastEditors: OCEAN.GZY
+ * @LastEditTime: 2023-11-19 20:17:39
+ * @FilePath: /ocean_im/oceanim/server/logic/logic_service.h
+ * @Description: 注释信息
+ */
 #ifndef __OCEANIM_LOGIC_LOGIC_SERVICE_H__
 #define __OCEANIM_LOGIC_LOGIC_SERVICE_H__
-#include "server/logic/logic.pb.h"
+#include "logic/logic.pb.h"
+#include "type.h"
+
+#include <mutex>
+#include <unordered_map>
+
+#include "brpc/channel.h"
+#include "bthread/unstable.h"
 
 namespace brpc
 {

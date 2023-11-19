@@ -1,6 +1,6 @@
-#include "server/logic/logic_service.h"
-#include "server/idgen/idgen.pb.h"
-#include "server/common/messages.pb.h"
+#include "logic/logic_service.h"
+#include "idgen/idgen.pb.h"
+#include "common/messages.pb.h"
 #include "type.h"
 
 #include <vector>

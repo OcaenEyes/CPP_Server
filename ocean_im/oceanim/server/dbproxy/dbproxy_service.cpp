@@ -1,4 +1,4 @@
-#include "server/dbproxy/dbproxy_service.h"
+#include "dbproxy/dbproxy_service.h"
 #include <cstdio>
 #include <sstream>
 #include <gflags/gflags.h>

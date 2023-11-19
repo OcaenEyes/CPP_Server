@@ -8,7 +8,6 @@
 #include "brpc/redis.h"
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-// #include <soci/soci.h>
 #include "soci/soci.h"
 
 namespace brpc

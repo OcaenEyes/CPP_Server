@@ -8,7 +8,7 @@
 #include <memory>
 #include <ostream>
 #include <utility>
-#include <butil/crc32c.h>
+#include "butil/crc32c.h"
 
 namespace std
 {

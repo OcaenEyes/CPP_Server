@@ -1,0 +1,1 @@
+cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/opt/third_party/soci -DSOCI_CXX11=ON
