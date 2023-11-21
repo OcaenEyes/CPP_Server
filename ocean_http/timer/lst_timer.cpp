@@ -1,4 +1,5 @@
 #include "lst_timer.h"
+#include "http/http_conn.h"
 sort_timer_lst::sort_timer_lst(/* args */)
 {
     head = NULL;
@@ -222,6 +223,7 @@ void cb_func(client_data *user_data)
     epoll_ctl(utils::u_epollfd, EPOLL_CTL_DEL, user_data->sockfd, 0);
     assert(user_data);
     close(user_data->sockfd);
+    http_conn::m_user_count--;
 }
 
 void sort_timer_lst::add_timer(util_timer *timer, util_timer *lst_head)
