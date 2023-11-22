@@ -258,6 +258,30 @@ http_conn::HTTP_CODE http_conn::process_read()
 
 bool http_conn::process_write(HTTP_CODE ret)
 {
+    switch (ret)
+    {
+    case INTERNAL_ERROR:
+    {
+        add_status_line(500, error_500_title);
+        add_headers(strlen(error_500_form));
+        if (!add_content(error_500_form))
+        {
+            return false;
+        }
+        break;
+    }
+    case BAD_REQUEST:
+    {
+    }
+    case FORBIDDEN_REQUEST:
+    {
+    }
+    case FILE_REQUEST:
+    {
+    }
+    default:
+        return false;
+    }
 }
 
 // 解析http请求行， 获得请求方法，目标URL及http版本号
@@ -410,6 +434,7 @@ void http_conn::unmap()
 
 bool http_conn::add_response(const char *format, ...)
 {
+    std::printf("http_conn::add_response(const char *format, ...):%s", format);
     if (m_write_idx >= WRITE_BUFFER_SIZE)
     {
         return false;
@@ -436,28 +461,35 @@ bool http_conn::add_response(const char *format, ...)
 
 bool http_conn::add_content(const char *content)
 {
+    return add_response("%s", content);
 }
 
 bool http_conn::add_status_line(int status, const char *title)
 {
+    return add_response("%s %d %s\r\n", "HTTP/1.1", status, title);
 }
 
 bool http_conn::add_headers(int content_length)
 {
+    return add_content_length(content_length) && add_linger() && add_blank_line();
 }
 
 bool http_conn::add_content_type()
 {
+    return add_response("Content-Type:%s\r\n", "text/html");
 }
 
 bool http_conn::add_content_length(int content_length)
 {
+    return add_response("Content-Length:%d\r\n", content_length);
 }
 
 bool http_conn::add_linger()
 {
+    return add_response("Connection:%s\r\n", (m_linger == true) ? "keep-alive" : "close");
 }
 
 bool http_conn::add_blank_line()
 {
+    return add_response("%s", "\r\n");
 }
