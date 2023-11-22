@@ -48,15 +48,15 @@ public:
 };
 
 
-class connectuinRAII
+class connectionRAII
 {
 private:
     MYSQL *connRAII;
     sql_connection_pool *poolRAII;
 
 public:
-    connectuinRAII(MYSQL **SQL, sql_connection_pool *conn_pool);
-    ~connectuinRAII();
+    connectionRAII(MYSQL **SQL, sql_connection_pool *conn_pool);
+    ~connectionRAII();
 };
 
 #endif

@@ -120,7 +120,7 @@ void sql_connection_pool::init(std::string Url, std::string User, std::string Pa
     m_MaxConn = m_FreeConn;
 }
 
-connectuinRAII::connectuinRAII(MYSQL **SQL, sql_connection_pool *conn_pool)
+connectionRAII::connectionRAII(MYSQL **SQL, sql_connection_pool *conn_pool)
 {
     *SQL =  conn_pool->GetConnection();
 
@@ -128,7 +128,7 @@ connectuinRAII::connectuinRAII(MYSQL **SQL, sql_connection_pool *conn_pool)
     poolRAII = conn_pool;
 }
 
-connectuinRAII::~connectuinRAII()
+connectionRAII::~connectionRAII()
 {
     poolRAII->ReleaseConnection(connRAII);
 }
