@@ -82,7 +82,7 @@ public:
     {
         LINE_OK = 0,
         LINE_BAD,
-        LINW_OPEN
+        LINE_OPEN
     };
 
 private:
