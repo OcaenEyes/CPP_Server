@@ -11,6 +11,8 @@ public:
     config(/* args */);
     ~config();
 
+    void parse_arg(int argc, char *argv[]);
+
     // 端口号
     int PORT;
 

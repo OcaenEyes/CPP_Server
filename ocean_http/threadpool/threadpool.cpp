@@ -9,7 +9,7 @@
 #include "threadpool.h"
 
 template <typename T>
-threadpool<T>::threadpool(int actor_model, sql_connection_pool *connPool, int thread_number = 8, int max_requests = 10000)
+threadpool<T>::threadpool(int actor_model, sql_connection_pool *connPool, int thread_number, int max_requests)
 {
     if (thread_number <= 0 || max_requests <= 0)
     {
