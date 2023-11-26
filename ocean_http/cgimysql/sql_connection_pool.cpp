@@ -1,4 +1,4 @@
-#include "sql_connection_pool.h"
+#include "cgimysql/sql_connection_pool.h"
 
 sql_connection_pool::sql_connection_pool(/* args */)
 {

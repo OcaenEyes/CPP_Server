@@ -1,3 +1,11 @@
+/*
+ * @Author: OCEAN.GZY
+ * @Date: 2023-11-26 10:55:10
+ * @LastEditors: OCEAN.GZY
+ * @LastEditTime: 2023-11-26 10:55:10
+ * @FilePath: /ocean_http/log/log.h
+ * @Description: 注释信息
+ */
 #ifndef __OCEANHTTP_LOG_H__
 #define __OCEANHTTP_LOG_H__
 
@@ -6,7 +14,7 @@
 #include <string>
 #include <stdarg.h>
 #include <pthread.h>
-#include "block_queue.h"
+#include "log/block_queue.h"
 
 class log
 {

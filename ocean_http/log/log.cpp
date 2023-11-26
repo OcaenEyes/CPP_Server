@@ -2,7 +2,7 @@
  * @Author: OCEAN.GZY
  * @Date: 2023-11-20 21:09:16
  * @LastEditors: OCEAN.GZY
- * @LastEditTime: 2023-11-20 22:01:04
+ * @LastEditTime: 2023-11-26 10:54:51
  * @FilePath: /ocean_http/log/log.cpp
  * @Description: 注释信息
  */
@@ -10,7 +10,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <stdarg.h>
-#include "log.h"
+#include "log/log.h"
 #include <pthread.h>
 
 log::log()
