@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(oceanhttp)
-
-set(CXX_STANDARD 11)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
@@ -13,11 +11,9 @@ add_executable(
   http/http_conn.h
   http/http_conn.cpp
   log/block_queue.h
-  log/block_queue.cpp
   lock/locker.h
   lock/locker.cpp
   threadpool/threadpool.h
-  threadpool/threadpool.cpp
   log/log.h
   log/log.cpp
   cgimysql/sql_connection_pool.h
